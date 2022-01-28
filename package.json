@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "parcel src/index.html",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "lint": "eslint \"src/**/*.{js,jsx}\" --quiet"
+    "lint": "eslint \"src/**/*.{js,jsx}\" --quiet",
+    "check": "npm run lint && npm run format"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,9 @@
     "@babel/preset-react": "^7.12.13",
     "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
     "parcel": "^1.12.3",
     "prettier": "^2.5.1"
   },
