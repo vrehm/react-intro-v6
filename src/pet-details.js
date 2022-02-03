@@ -1,9 +1,10 @@
 import { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import Carousel from "./carousel";
+import ErrorBoundary from "./error-boundary";
 
 class PetDetails extends Component {
-  state = { loading: true };
+  state = { loading: true, redirect: false };
 
   async componentDidMount() {
     const res = await fetch(
@@ -11,6 +12,9 @@ class PetDetails extends Component {
     );
     const json = await res.json();
     this.setState(Object.assign({ loading: false }, json.pets[0]));
+    if (json.pets.length === 0) {
+      setTimeout(() => this.setState({ redirect: true }), 5000);
+    }
   }
 
   render() {
@@ -18,21 +22,45 @@ class PetDetails extends Component {
       return <h2>loading … </h2>;
     }
 
+    if (this.state.redirect) {
+      return <Redirect to="/" />;
+    }
+
     const { animal, breed, city, state, description, name, images } =
       this.state;
 
-    return (
-      <div className="details">
-        <Carousel images={images} />
-        <div className="pet-details">
-          <h1>{name}</h1>
-          <h2>{`${animal} — ${breed} — ${city}, ${state}`}</h2>
-          <button>Adopt {name}</button>
-          <p>{description}</p>
+    if (!animal) {
+      return (
+        <div className="details">
+          <Carousel images={images} />
+          <div className="pet-details">
+            <h1>Sorry, this pet was not found.</h1>
+            <h2>Redirecting in 5s...</h2>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="details">
+          <Carousel images={images} />
+          <div className="pet-details">
+            <h1>{name}</h1>
+            <h2>{`${animal} — ${breed} — ${city}, ${state}`}</h2>
+            <button>Adopt {name}</button>
+            <p>{description}</p>
+          </div>
+        </div>
+      );
+    }
   }
 }
 
-export default withRouter(PetDetails);
+const PetDetailsWithRouter = withRouter(PetDetails);
+
+export default function PetDetailsErrorBoundary(props) {
+  return (
+    <ErrorBoundary>
+      <PetDetailsWithRouter {...props} />
+    </ErrorBoundary>
+  );
+}
