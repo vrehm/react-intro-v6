@@ -54,6 +54,13 @@ body {
   border-bottom: #333 2px solid;
 }
 
+.pet-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .pet img {
   width: 100px;
   min-height: 100px;
