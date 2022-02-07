@@ -4,7 +4,7 @@ import Carousel from "./carousel";
 import ErrorBoundary from "./error-boundary";
 
 class PetDetails extends Component {
-  state = { loading: true, redirect: false };
+  state = { loading: true, redirect: false, timeoutId: null };
 
   async componentDidMount() {
     const res = await fetch(
@@ -13,8 +13,14 @@ class PetDetails extends Component {
     const json = await res.json();
     this.setState(Object.assign({ loading: false }, json.pets[0]));
     if (json.pets.length === 0) {
-      setTimeout(() => this.setState({ redirect: true }), 5000);
+      this.setState({
+        timeoutId: setTimeout(() => this.setState({ redirect: true }), 5000),
+      });
     }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.timeoutId);
   }
 
   render() {
